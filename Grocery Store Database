@@ -1,0 +1,28 @@
+--create a grocery store database
+
+CREATE TABLE grocery_store (id INTEGER PRIMARY KEY, item TEXT, aisle INTEGER, price INTEGER);
+
+INSERT INTO grocery_store VALUES (1, "apples", 1, 0.75);
+INSERT INTO grocery_store VALUES (2, "bananas", 1, 0.25);
+INSERT INTO grocery_store VALUES (3, "lettuce", 1, 0.5);
+INSERT INTO grocery_store VALUES (4, "cereal", 2, 3.25);
+INSERT INTO grocery_store VALUES (5, "bread", 3, 2);
+INSERT INTO grocery_store VALUES (6, "coffee", 2, 4);
+INSERT INTO grocery_store VALUES (7, "milk", 5, 3);
+INSERT INTO grocery_store VALUES (8, "eggs", 5, 2);
+INSERT INTO grocery_store VALUES (9, "chicken", 4, 12);
+INSERT INTO grocery_store VALUES (10, "steak", 4, 16);
+INSERT INTO grocery_store VALUES (11, "butter", 5, 3);
+INSERT INTO grocery_store VALUES (12, "cheese", 5, 4);
+INSERT INTO grocery_store VALUES (13, "juice", 5, 3.25);
+INSERT INTO grocery_store VALUES (14, "ice cream", 6, 4);
+INSERT INTO grocery_store VALUES (15, "bagels", 3, 3.5);
+
+--display the database ordered by price
+SELECT * FROM grocery_store ORDER BY price;
+
+--display the items that cost more than $3 in ascending order
+SELECT * FROM grocery_store WHERE price > 3 ORDER BY price;
+
+--display the database ordered by aisle (ie map out the store)
+SELECT * FROM grocery_store ORDER BY aisle;
