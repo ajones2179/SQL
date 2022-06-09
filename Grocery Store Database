@@ -26,3 +26,9 @@ SELECT * FROM grocery_store WHERE price > 3 ORDER BY price;
 
 --display the database ordered by aisle (ie map out the store)
 SELECT * FROM grocery_store ORDER BY aisle;
+
+--display alphabetical list of items that cost under $2.50
+SELECT item FROM grocery_store WHERE price < 2.5 ORDER BY item asc;
+
+--which items are over $10 and which aisles are they located in? 
+SELECT item, aisle FROM grocery_store WHERE price > 10;
