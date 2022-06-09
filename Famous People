@@ -1,0 +1,88 @@
+--create a table of famous people
+CREATE TABLE famous_people(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT
+);
+
+INSERT INTO famous_people (name) VALUES ("Harry Potter");
+INSERT INTO famous_people (name) VALUES ("Doja Cat");
+INSERT INTO famous_people (name) VALUES ("JK Rowling");
+INSERT INTO famous_people (name) VALUES ("Daniel Radcliffe");
+INSERT INTO famous_people (name) VALUES ("Gandalf");
+INSERT INTO famous_people (name) VALUES ("Ian McKellen");
+INSERT INTO famous_people (name) VALUES ("Magneto");
+INSERT INTO famous_people (name) VALUES ("Reese Witherspoon");
+INSERT INTO famous_people (name) VALUES ("JRR Tolkien");
+INSERT INTO famous_people (name) VALUES ("Stephen King");
+INSERT INTO famous_people (name) VALUES ("Johnny Depp");
+INSERT INTO famous_people (name) VALUES ("Edward Scissorhands");
+INSERT INTO famous_people (name) VALUES ("Ronald Weasley");
+INSERT INTO famous_people (name) VALUES ("Katy Perry");
+INSERT INTO famous_people (name) VALUES ("Robert Frost");
+
+--create a table of famous actors
+CREATE TABLE actor(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    person_id INTEGER,
+    movie TEXT,
+    character TEXT
+);
+
+INSERT INTO actor (person_id, movie, character) VALUES (4, "Harry Potter", "Harry Potter");
+INSERT INTO actor (person_id, movie, character) VALUES (6, "Lord of the Rings", "Gandalf");
+INSERT INTO actor (person_id, movie, character) VALUES (6, "X-Men", "Magneto");
+INSERT INTO actor (person_id, movie, character) VALUES (8, "Legally Blonde", "Elle Woods");
+INSERT INTO actor (person_id, movie, character) VALUES (11, "Edward Scissorhands", "Edward Scissorhands");
+
+--create a table of famous singers
+CREATE TABLE singer(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    person_id INTEGER,
+    song TEXT
+);
+
+INSERT INTO singer (person_id, song) VALUES (2, "Kiss Me More");
+INSERT INTO singer (person_id, song) VALUES (14, "Firework");
+
+--create a table of famous authors
+CREATE TABLE author(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    person_id INTEGER,
+    book TEXT,
+    movie TEXT,
+    character TEXT
+);
+
+INSERT INTO author (person_id, book, movie, character) VALUES (3, "Harry Potter", "Harry Potter", "Harry Potter");
+INSERT INTO author (person_id, book, movie, character) VALUES (3, "Harry Potter", "Harry Potter", "Ronald Weasley");
+INSERT INTO author (person_id, book, movie, character) VALUES (9, "Lord of the Rings", "Lord of the Rings", "Gandalf");
+INSERT INTO author (person_id, book) VALUES (10, "It");
+
+--create a table of relationships among famous people
+CREATE TABLE relationships(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    person1_id INTEGER,
+    person2_id INTEGER
+);
+
+INSERT INTO relationships (person1_id, person2_id) VALUES (1, 13);
+
+--Which actor played which character?
+SELECT famous_people.name as actor, actor.character
+    FROM famous_people
+    JOIN actor
+    ON actor.person_id = famous_people.id;
+    
+--Which author wrote which book(s)?
+SELECT famous_people.name as author, author.book
+    FROM famous_people
+    JOIN author
+    ON author.person_id = famous_people.id
+    GROUP BY famous_people.name;
+
+--What relationships are there among the famous people in the table?
+SELECT a.name, b.name FROM relationships
+    JOIN famous_people a
+    ON relationships.person1_id = a.id
+    JOIN famous_people b
+    ON relationships.person2_id = b.id;
