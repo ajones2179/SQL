@@ -1,0 +1,32 @@
+--create a table with info about dogs
+CREATE TABLE dogs(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    owner TEXT,
+    breed TEXT,
+    age INTEGER
+);
+
+INSERT INTO dogs (name, owner, breed, age) VALUES ("Charlie", "Stephanie", "lab", 2);
+INSERT INTO dogs (name, owner, breed, age) VALUES ("Luna", "Albert", "pitbull", 9);
+INSERT INTO dogs (name, owner, breed, age) VALUES ("Bella", "Andrea", "st bernard", 5);
+INSERT INTO dogs (name, owner, breed, age) VALUES ("Max", "Sam", "bulldog", 3);
+INSERT INTO dogs (name, owner, breed, age) VALUES ("Tank", "Chris", "chihuaha", 10);
+
+--display table of dogs
+SELECT * FROM dogs;
+
+--add gender of dogs and display table
+ALTER TABLE dogs ADD gender TEXT;
+SELECT * FROM dogs;
+
+UPDATE dogs SET gender = "M" WHERE id=1;
+UPDATE dogs SET gender = "F" WHERE id=2;
+UPDATE dogs SET gender = "F" WHERE id=3;
+UPDATE dogs SET gender = "M" WHERE id=4;
+UPDATE dogs SET gender = "M" WHERE id=5;
+SELECT * FROM dogs;
+
+--delete one row and display table
+DELETE FROM dogs WHERE id=3;
+SELECT * FROM dogs;
