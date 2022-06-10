@@ -1,0 +1,42 @@
+/* In this file, I queried a database with customer and order data to answer some questions about the data. */
+
+--1. How many orders were placed in January?
+SELECT * FROM BIT_DB.JanSales LIMIT 20;
+SELECT count(orderID) 
+    FROM BIT_DB.JanSales;
+
+--2. How many of those orders were for an iPhone?
+SELECT count(orderID)
+    FROM BIT_DB.JanSales
+    WHERE Product = 'iPhone';
+
+--3. Select the customer account numbers for all the orders that were placed in February.
+SELECT * FROM BIT_DB.FebSales LIMIT 20;
+SELECT * FROM BIT_DB.customers LIMIT 20;
+SELECT acctnum
+    FROM BIT_DB.customers
+    JOIN BIT_DB.FebSales
+    ON customers.order_id = FebSales.orderID;
+
+--4. Which product was the cheapest one sold in January, and what was the price?
+SELECT Product, price
+    FROM BIT_DB.JanSales
+    WHERE price = (SELECT min(price) FROM BIT_DB.JanSales)
+    GROUP BY Product;
+
+--5. What is the total revenue for each product sold in January?
+SELECT Product, SUM(Quantity)*price as revenue
+    FROM BIT_DB.JanSales
+    GROUP BY Product;
+
+--6. Which products were sold in February at 548 Lincoln St, Seattle, WA 98101, how many were sold, and what was the total revenue?
+SELECT Product, Quantity, SUM(Quantity)*price as revenue
+    FROM BIT_DB.FebSales
+    Where location = '548 Lincoln St, Seattle, WA 98101';
+
+--7. How many customers ordered more than 2 products at a time in February, and what was the average amount spent for those customers?
+SELECT count(customers.acctnum), AVG(Quantity*price)
+    FROM BIT_DB.customers
+    JOIN BIT_DB.FebSales
+    ON customers.order_id = FebSales.orderID
+    WHERE Quantity > 2;
