@@ -18,7 +18,7 @@ CREATE TABLE BIT_DB.Spotifydata(
     tempo DECIMAL(6,3) NOT NULL,
     duration_ms INTEGER NOT NULL,
     time_signature INTEGER NOT NULL
-    )
+    );
 
 SELECT * FROM BIT_DB.Spotifydata;
 
