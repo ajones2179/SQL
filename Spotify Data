@@ -1,0 +1,124 @@
+--Create table of spotify data from csv file (Top 50 Spotify Songs of 2021)
+CREATE TABLE BIT_DB.Spotifydata(
+    id INTEGER PRIMARY KEY,
+    artist_name VARCHAR NOT NULL,
+    track_name VARCHAR NOT NULL,
+    track_id VARCHAR NOT NULL,
+    popularity INTEGER NOT NULL,
+    danceability DECIMAL(4,3) NOT NULL,
+    energy DECIMAL(4,3) NOT NULL,
+    key INTEGER NOT NULL,
+    loudness DECIMAL(5,3) NOT NULL,
+    mode INTEGER NOT NULL,
+    speechiness DECIMAL(5,4) NOT NULL,
+    acousticness DECIMAL(6,5) NOT NULL,
+    instrumentalness TEXT NOT NULL,
+    liveness DECIMAL(5,4) NOT NULL,
+    valence DECIMAL(4,3) NOT NULL,
+    tempo DECIMAL(6,3) NOT NULL,
+    duration_ms INTEGER NOT NULL,
+    time_signature INTEGER NOT NULL
+    )
+
+SELECT * FROM BIT_DB.Spotifydata;
+
+--1. How many hits did each of the artists have in 2021?
+SELECT artist_name, COUNT(artist_name) AS hits
+    FROM BIT_DB.Spotifydata
+    GROUP BY artist_name
+    ;
+
+--2. How many unique artists had top 50 hits in 2021?
+SELECT COUNT(DISTINCT artist_name)
+    FROM BIT_DB.Spotifydata
+    ;
+
+--3. Who had the most hits in 2021?
+SELECT artist_name, COUNT(artist_name)
+    FROM BIT_DB.Spotifydata
+    GROUP BY artist_name
+    HAVING COUNT(artist_name) = (SELECT MAX(hits)
+                                    FROM (SELECT COUNT(artist_name) AS hits
+                                            FROM BIT_DB.Spotifydata
+                                            GROUP BY artist_name))
+    ;
+
+--alternative method to solve #3:
+SELECT artist_name, COUNT(artist_name) AS hits
+    FROM BIT_DB.Spotifydata
+    GROUP BY artist_name
+    ORDER BY COUNT(artist_name) DESC
+    LIMIT 2
+    ;
+
+--4. What were those hits?
+SELECT artist_name, track_name
+    FROM BIT_DB.Spotifydata
+    WHERE artist_name IN ('Olivia Rodrigo', 'Doja Cat')
+    ORDER BY artist_name
+    ;
+
+--alternative method to solve #4:
+SELECT artist_name, track_name
+    FROM BIT_DB.Spotifydata
+    WHERE artist_name IN (SELECT artist_name
+                            FROM BIT_DB.Spotifydata
+                            GROUP BY artist_name
+                            ORDER BY COUNT(artist_name) DESC
+                            LIMIT 2)
+    ORDER BY artist_name
+    ;
+
+--5. What was the highest energy level?
+SELECT energy
+    FROM BIT_DB.Spotifydata
+    ORDER BY energy DESC
+    LIMIT 1
+    ;
+
+--6. What was the average length of a song (in seconds) with a popularity of more than 90?
+SELECT AVG(duration_ms)/1000
+    FROM BIT_DB.Spotifydata
+    WHERE popularity > 90
+    ;
+
+--7. Which top 50 song of 2021 was the least danceable and who sang it?
+SELECT track_name, artist_name
+    FROM BIT_DB.Spotifydata
+    ORDER BY danceability ASC
+    LIMIT 1
+    ;
+
+--8. Which artist had the least popular song and what was the song and its popularity?
+SELECT artist_name, track_name, popularity
+    FROM BIT_DB.Spotifydata
+    ORDER BY popularity ASC
+    LIMIT 1
+    ;
+
+--9. Is there a relationship between the songs' energy and popularity?
+SELECT track_name, popularity, popularity/energy
+    FROM BIT_DB.Spotifydata
+    ORDER BY popularity DESC
+    ;
+
+--10. Which song was the shortest top 50 song?
+SELECT track_name
+    FROM BIT_DB.Spotifydata
+    GROUP BY duration_ms
+    HAVING MIN(duration_ms)
+    LIMIT 1
+    ;
+
+--11. What was the average liveness of the top 3 songs?
+SELECT AVG(liveness)
+    FROM BIT_DB.Spotifydata
+    ORDER BY popularity DESC LIMIT 3
+    ;
+
+--12. How many songs did Glass Animals have on the top 50 list?
+SELECT COUNT(track_name)
+    FROM BIT_DB.Spotifydata
+    WHERE artist_name = 'Glass Animals'
+    ;
+ 
