@@ -1,0 +1,148 @@
+/*For this project, I downloaded the Chinook database.
+Then I performed analytics using sql on the data.
+*/
+
+--1. Show Customers (full names, customer ID, country) who are not in the US.
+SELECT LasName, FirstName, CustomerID, Country
+    FROM customers
+    WHERE Country != 'USA'
+    ;
+
+--2. Show only the Customers from Brazil.
+SELECT LastName, FistName, CustomerID, Country
+    FROM customers
+    WHERE Country = 'Brazil'
+    ;
+
+--3. Find the Invoices of Customers who are from Brazil. The resulting table should show the customer's full name, Invoice ID, 
+--Date of the invoice, and billing country.
+SELECT LastName, FirstName, InvoiceID, InvoiceDate, BillingCountry
+    FROM customers cust
+    LEFT JOIN invoices inv
+    ON cust.Customerid = inv.Customerid
+    WHERE cust.Country = 'Brazil'
+    ;
+
+--4. Show the Employees who are Sales Agents.
+SELECT LastName, FirstName, EmployeeID, Title 
+    FROM employees
+    WHERE Title LIKE 'Sales%Agent'
+    ;
+
+--5. Find a unique/distinct list of billing countries from the Invoice table.
+SELECT DISTINCT BillingCountry
+    FROM invoices
+    ;
+
+--6. Provide a query that shows the invoices associated with each sales agent. The resulting table should include the 
+--Sales Agent's full name.
+SELECT LastName, FirstName, Invoiceid
+    FROM employees emp
+    LEFT JOIN customers cust
+    ON emp.Employeeid = cust.SupportRepid
+    LEFT JOIN invoices inv
+    ON cust.Customerid = inv.Customerid
+    ;
+
+--7. Show the Invoice Total, Customer name, Country, and Sales Agent name for all invoices and customers.
+SELECT Total, 
+        cust.LastName AS 'Customer LastName', 
+        cust.FirstName AS 'Customer FirstName', 
+        BillingCountry, 
+        emp.LastName AS 'Employee LastName', 
+        emp.FirstName AS 'Employee FirstName'
+    FROM invoices inv
+    LEFT JOIN customers cust
+    ON inv.Customerid = cust.Customerid
+    LEFT JOIN employees emp
+    ON cust.SupportRepid = emp.Employeeid
+    ;
+
+--8. How many Invoices were there in 2009?
+SELECT COUNT(*) 
+    FROM invoices 
+    WHERE InvoiceDate LIKE '%2009%'
+    ;
+
+--9. What are the total sales for 2009?
+SELECT SUM(Total) 
+    FROM invoices 
+    WHERE InvoiceDate LIKE '%2009%'
+    ;
+
+--10. Write a query that includes the purchased track name with each invoice line item.
+SELECT Name, InvoiceLineid
+    FROM tracks trk
+    LEFT JOIN invoice_items invt
+    ON trk.Trackid = invt.Trackid
+    ;
+
+--11. Write a query that includes the purchased track name AND artist name with each invoice line item.
+SELECT trk.Name AS 'Track', art.Name AS 'Artist', InvoiceLineid
+    FROM tracks trk
+    LEFT JOIN albums alb
+    ON trk.Albumid = alb.Albumid
+    LEFT JOIN artists art
+    ON alb.Artistid = art.Artistid
+    LEFT JOIN invoice_items invt
+    ON trk.Trackid = invt.Trackid
+    ;
+
+--12. Provide a query that shows all the Tracks, and include the Album name, Media type, and Genre.
+SELECT trk.Name AS 'Track', alb.Title AS 'Album', med.Name AS 'Media', gen.Name AS 'Genre'
+    FROM tracks trk
+    LEFT JOIN albums alb
+    ON trk.Albumid = alb.Albumid
+    LEFT JOIN media_types med
+    ON trk.MediaTypeid = med.MediaTypeid
+    LEFT JOIN genres gen
+    ON trk.Genreid = gen.Genreid
+    ;
+
+--13. Show the total sales made by each sales agent.
+SELECT SUM(Total), emp.LastName AS 'Employee LastName'
+    FROM invoices inv
+    LEFT JOIN customers cust
+    ON inv.Customerid = cust.Customerid
+    LEFT JOIN employees emp
+    ON cust.SupportRepid = emp.Employeeid
+    GROUP BY emp.Employeeid
+    ;
+
+--14. Which sales agent made the most sales in 2009?
+SELECT COUNT(*), emp.LastName AS 'Employee LastName'
+    FROM invoices inv
+    LEFT JOIN customers cust
+    ON inv.Customerid = cust.Customerid
+    LEFT JOIN employees emp
+    ON cust.SupportRepid = emp.Employeeid
+    WHERE InvoiceDate LIKE '%2009%'
+    ;
+
+--15. Write a query showing the total sales for each track.
+SELECT Name, Quantity*invt.UnitPrice AS 'Sales'
+    FROM tracks trk
+    LEFT JOIN invoice_items invt
+    ON trk.TrackId = invt.TrackId
+    GROUP BY Name
+    ORDER BY Quantity*invt.UnitPrice DESC
+    ;
+
+--16. Who are the top 10 customers, and their emails, in terms of purchases?
+SELECT LastName, FirstName, Email, Total
+    FROM customers cust
+    LEFT JOIN invoices inv
+    ON cust.Customerid = inv.Customerid
+    ORDER BY Total DESC
+    LIMIT 10
+    ;
+
+--17. Which genre was most common?
+SELECT gen.Name AS 'Genre', COUNT(gen.Name)
+    FROM genres gen
+    LEFT JOIN tracks trk
+    ON gen.Genreid = trk.Genreid
+    GROUP BY gen.Name
+    ORDER BY COUNT(gen.Name) DESC
+    LIMIT 1
+    ;
