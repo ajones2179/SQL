@@ -1,0 +1,88 @@
+/*For this project, I downloaded the 1.88 Million US Wildfires database.
+Then I performed analytics using sql on the data.
+*/
+
+SELECT * FROM Fires LIMIT 100;
+
+--1. What were the top 5 years for fire incidents?
+SELECT FIRE_YEAR, COUNT(FIRE_YEAR)
+    FROM Fires
+    GROUP BY FIRE_YEAR
+    ORDER BY COUNT(FIRE_YEAR) DESC
+    LIMIT 5
+    ;
+
+--2. What were the top three causes of fires?
+SELECT STAT_CAUSE_DESCR, COUNT(STAT_CAUSE_DESCR)
+    FROM Fires
+    GROUP BY STAT_CAUSE_DESCR
+    ORDER BY COUNT(STAT_CAUSE_DESCR) DESC
+    LIMIT 3
+    ;
+
+--3. Show a list of the states with how many fires they had in 2006 in order from greatest to least.
+SELECT STATE, COUNT(STATE)
+    FROM Fires
+    WHERE FIRE_YEAR = 2006
+    GROUP BY STATE
+    ORDER BY COUNT(STATE) DESC
+    ;
+
+--4. How many of the fires in 2006 burned over 10 acres?
+SELECT COUNT(FIRE_SIZE)
+    FROM Fires
+    WHERE FIRE_SIZE > 10 AND FIRE_YEAR = 2006
+    ;
+
+--5. How many fires were caused by lightning in 2006?
+SELECT COUNT(STAT_CAUSE_DESCR)
+    FROM Fires
+    WHERE STAT_CAUSE_DESCR = 'Lightning' AND FIRE_YEAR = 2006
+    ;
+
+--6. Which fire was the largest recorded in 2006 where was it located?
+SELECT FIRE_NAME, MAX(FIRE_SIZE), NWCG_REPORTING_UNIT_NAME, STATE
+    FROM Fires
+    WHERE FIRE_YEAR = 2006
+    ;
+    
+--7. What percentage of the total number of fires occured in California?
+SELECT SUM(CASE WHEN STATE = 'CA' THEN 1 ELSE 0 END) * 100/ COUNT(*) AS 'CA Fires'
+    FROM Fires
+    ;
+    
+--alternative way to solve #7 (MySQL-friendly only)
+SELECT SUM(STATE = 'CA') * 100/COUNT(*) AS 'CA Fires'
+    FROM Fires
+    ;
+    
+--8. What was the largest fire in California and when did it burn?
+SELECT FIRE_NAME, NWCG_REPORTING_UNIT_NAME, MAX(FIRE_SIZE), FIRE_YEAR
+    FROM Fires
+    WHERE STATE = 'CA'
+    ;
+
+--9. What was the largest recorded fire on record and where and when did it occur?
+SELECT FIRE_NAME, NWCG_REPORTING_UNIT_NAME, STATE, MAX(FIRE_SIZE), FIRE_YEAR
+    FROM Fires
+    ;
+    
+--10. What was the cause of this fire?
+SELECT FIRE_NAME, STAT_CAUSE_DESCR
+    FROM Fires
+    WHERE FIRE_NAME = 'INOWAK'
+    ;
+
+--11. What were the top 10 largest fires on record and where and when did they occur?
+SELECT FIRE_NAME, NWCG_REPORTING_UNIT_NAME, STATE, FIRE_SIZE, FIRE_YEAR
+    FROM Fires
+    ORDER BY FIRE_SIZE DESC
+    LIMIT 10
+    ;
+
+--12. What was the average burn area for each state?
+SELECT STATE, AVG(FIRE_SIZE)
+    FROM Fires
+    GROUP BY STATE
+    ORDER BY AVG(FIRE_SIZE)
+    ;
