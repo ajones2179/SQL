@@ -1,0 +1,84 @@
+/*
+For this project, I downloaded the fictional Student Peformance in Exams csv file from kaggle.
+I used sql to upload the data to a table in a database and perform analytics to answer questions about the data.
+*/
+
+CREATE TABLE BIT_DB.StudentsPerformance(
+    id INTEGER PRIMARY KEY,
+    gender VARCHAR NOT NULL,
+    [race/ethnicity] VARCHAR NOT NULL,
+    parental_level_of_education VARCHAR NOT NULL,
+    lunch VARCHAR NOT NULL,
+    test_preparation_course VARCHAR NOT NULL,
+    math_score INTEGER NOT NULL,
+    reading_score INTEGER NOT NULL,
+    writing_score INTEGER NOT NULL
+);
+
+SELECT * FROM BIT_DB.StudentsPerformance;
+
+--1. How many students took the exams?
+SELECT COUNT(id)
+    FROM StudentsPerformance
+    ;
+
+--2. What percentage of students were female?
+SELECT gender, COUNT(gender)*100/(SELECT COUNT(*) FROM StudentsPerformance) AS feemale_student_percentage
+    FROM StudentsPerformance
+    WHERE gender = 'female'
+    ;
+
+--3. What was the average score for each exam?
+SELECT ROUND(AVG(math_score),1) AS avg_math, 
+ROUND(AVG(reading_score),1) AS avg_reading,
+ROUND(AVG(writing_score),1) AS avg_writing
+    FROM StudentsPerformance
+    ;
+
+--4. How many students passed the math exam?
+SELECT COUNT(math_score)
+    FROM StudentsPerformance
+    WHERE math_score > 70
+    ;
+    
+--5. How many students passed all three exams?
+SELECT COUNT(id)
+    FROM StudentsPerformance
+    WHERE math_score > 70 AND reading_score > 70 AND writing_score > 70
+    ;
+    
+--6. How many students failed all three exams?
+SELECT COUNT(id)
+    FROM StudentsPerformance
+    WHERE math_score < 60 AND reading_score < 60 AND writing_score < 60
+    ;
+    
+--7. How many students had parents with each level of education?
+SELECT parental_level_of_education, COUNT(id)
+    FROM StudentsPerformance
+    GROUP BY parental_level_of_education
+    ;
+
+--8. What are the percentages of students with parents with different levels of education?
+SELECT parental_level_of_education, COUNT(id)*100/(SELECT COUNT(*) FROM StudentsPerformance) AS parental_education_percentage
+    FROM StudentsPerformance
+    GROUP BY parental_level_of_education
+    ;
+    
+--9. Of the students that scored over 90 on all three exams, how many had a parent with a master's degree?
+SELECT COUNT(id)
+    FROM StudentsPerformance
+    WHERE math_score > 90 AND reading_score > 90 AND writing_score > 90 AND parental_level_of_education = "master's degree"
+    ;
+    
+--10. What percentage of students completed a test preparation course?
+SELECT COUNT(id)*100/(SELECT COUNT(*) FROM StudentsPerformance) AS test_prep_percentage
+    FROM StudentsPerformance
+    WHERE test_preparation_course = 'completed'
+    ;
+    
+--11. What percentage of students that completed a test preparation course failed the math exam?
+SELECT COUNT(id)*100/(SELECT COUNT(*) FROM StudentsPerformance) AS percent_failed_math
+    FROM StudentsPerformance
+    WHERE test_preparation_course = 'completed' AND math_score < 60
+    ;
